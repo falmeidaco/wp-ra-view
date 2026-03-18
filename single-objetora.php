@@ -176,7 +176,7 @@
 
                 reportBtn.addEventListener('click', function () {
                   modalBody.innerHTML = '';
-                  var formatter = new window.JSONFormatter(report, 2, { hoverPreviewEnabled: true });
+                  var formatter = new window.JSONFormatter(report, Infinity, { hoverPreviewEnabled: true });
                   modalBody.appendChild(formatter.render());
                   modal.classList.remove('hidden');
                   modal.classList.add('flex');
@@ -265,7 +265,7 @@
         <div class="flex items-center gap-2">
           <span id="gltf-badge" class="text-xs font-medium px-2 py-0.5 rounded-full bg-gray-100 text-gray-400">Aguardando...</span>
           <button id="gltf-report-btn"
-            class="hidden text-xs font-medium px-2 py-0.5 rounded-lg border border-gray-200 text-gray-500 hover:bg-gray-50 transition-colors"
+            class="hidden text-xs font-medium px-2 py-0.5 rounded-lg border border-gray-200 text-gray-500 hover:bg-gray-100 hover:border-gray-300 hover:text-gray-700 active:scale-95 active:bg-gray-200 transition-all cursor-pointer"
             type="button">
             Ver relatório JSON
           </button>
