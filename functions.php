@@ -10,6 +10,12 @@ function carregar_estilos_tema() {
         [],
         filemtime(get_stylesheet_directory() . '/style.css')
     );
+    wp_enqueue_style(
+        'tema-tailwind',
+        get_template_directory_uri() . '/assets/css/app.css',
+        [],
+        filemtime(get_stylesheet_directory() . '/assets/css/app.css')
+    );
 }
 
 add_action('wp_enqueue_scripts', 'carregar_estilos_tema');

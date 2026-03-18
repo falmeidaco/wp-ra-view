@@ -6,15 +6,15 @@ Description: Página para visualização de elementos 3D em RA
 Version: 0.0.1
 */
 
-*,
-*::before,
-*::after {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
+@layer base {
+  *, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
 
-html, body {
-  height: 100%;
-  width: 100%;
+  html, body {
+    height: 100%;
+    width: 100%;
+  }
 }
