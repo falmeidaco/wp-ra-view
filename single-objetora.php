@@ -164,6 +164,36 @@
               }
 
               validationBody.innerHTML = html;
+
+              // Botão e modal do relatório JSON
+              var reportBtn   = document.getElementById('gltf-report-btn');
+              var modal       = document.getElementById('gltf-modal');
+              var modalBody   = document.getElementById('gltf-modal-body');
+              var modalClose  = document.getElementById('gltf-modal-close');
+
+              if (reportBtn && modal && modalBody && typeof window.JSONFormatter === 'function') {
+                reportBtn.classList.remove('hidden');
+
+                reportBtn.addEventListener('click', function () {
+                  modalBody.innerHTML = '';
+                  var formatter = new window.JSONFormatter(report, 2, { hoverPreviewEnabled: true });
+                  modalBody.appendChild(formatter.render());
+                  modal.classList.remove('hidden');
+                  modal.classList.add('flex');
+                });
+
+                modalClose.addEventListener('click', function () {
+                  modal.classList.add('hidden');
+                  modal.classList.remove('flex');
+                });
+
+                modal.addEventListener('click', function (e) {
+                  if (e.target === modal) {
+                    modal.classList.add('hidden');
+                    modal.classList.remove('flex');
+                  }
+                });
+              }
             })
             .catch(function (err) {
               validationBadge.textContent = 'Falha';
@@ -232,10 +262,28 @@
     <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
       <div class="px-5 py-3 border-b border-gray-100 bg-gray-50 flex items-center justify-between">
         <span class="text-xs font-semibold uppercase tracking-wider text-gray-500">Validação glTF</span>
-        <span id="gltf-badge" class="text-xs font-medium px-2 py-0.5 rounded-full bg-gray-100 text-gray-400">Aguardando...</span>
+        <div class="flex items-center gap-2">
+          <span id="gltf-badge" class="text-xs font-medium px-2 py-0.5 rounded-full bg-gray-100 text-gray-400">Aguardando...</span>
+          <button id="gltf-report-btn"
+            class="hidden text-xs font-medium px-2 py-0.5 rounded-lg border border-gray-200 text-gray-500 hover:bg-gray-50 transition-colors"
+            type="button">
+            Ver relatório JSON
+          </button>
+        </div>
       </div>
       <div id="gltf-validation-body" class="px-5 py-4 text-sm text-gray-400">
         Carregando validação...
+      </div>
+    </div>
+
+    <!-- Modal relatório JSON -->
+    <div id="gltf-modal" class="fixed inset-0 z-50 hidden items-center justify-center p-4" style="background:rgba(0,0,0,0.5);">
+      <div class="bg-white rounded-xl shadow-xl w-full max-w-3xl max-h-screen flex flex-col" style="max-height:85vh;">
+        <div class="flex items-center justify-between px-5 py-3 border-b border-gray-100 shrink-0">
+          <span class="text-sm font-semibold text-gray-700">Relatório completo — glTF Validator</span>
+          <button id="gltf-modal-close" type="button" class="text-gray-400 hover:text-gray-600 text-lg leading-none">&times;</button>
+        </div>
+        <div id="gltf-modal-body" class="overflow-auto px-5 py-4 text-xs font-mono"></div>
       </div>
     </div>
 

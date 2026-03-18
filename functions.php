@@ -22,6 +22,12 @@ add_action('wp_enqueue_scripts', 'carregar_estilos_tema');
 
 function carregar_scripts_tema() {
     if (is_singular('objetora')) {
+        wp_enqueue_style(
+            'json-formatter',
+            get_template_directory_uri() . '/assets/css/json-formatter.css',
+            [],
+            filemtime(get_stylesheet_directory() . '/assets/css/json-formatter.css')
+        );
         wp_enqueue_script(
             'gltf-validator',
             get_template_directory_uri() . '/assets/js/validator.js',

@@ -25,6 +25,7 @@
     "tailwindcss": "^4.2.2"
   },
   "dependencies": {
-    "gltf-validator": "^2.0.0-dev.3.10"
+    "gltf-validator": "^2.0.0-dev.3.10",
+    "json-formatter-js": "^2.5.23"
   }
 }
