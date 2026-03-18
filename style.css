@@ -1,0 +1,20 @@
+@charset "UTF-8";
+/*
+Theme Name: RA View
+Author: Felipe Almeida
+Description: Página para visualização de elementos 3D em RA
+Version: 0.0.1
+*/
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  height: 100%;
+  width: 100%;
+}
