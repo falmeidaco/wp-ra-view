@@ -116,11 +116,77 @@
 
         setCell('mv-polygons', polyCount > 0 ? polyCount.toLocaleString('pt-BR') : 'N/A');
         setCell('mv-meshes',   meshCount > 0 ? meshCount  : 'N/A');
+
+        // --- Validação glTF via bundle local ---
+        var validationBody  = document.getElementById('gltf-validation-body');
+        var validationBadge = document.getElementById('gltf-badge');
+        var glbSrc          = mv.getAttribute('src');
+
+        if (validationBody && glbSrc && typeof window.gltfValidate === 'function') {
+          window.gltfValidate(glbSrc)
+            .then(function (report) {
+              var issues   = report.issues;
+              var hasError = issues.numErrors > 0;
+              var hasWarn  = issues.numWarnings > 0;
+
+              if (hasError) {
+                validationBadge.textContent = issues.numErrors + ' erro(s)';
+                validationBadge.className = 'text-xs font-medium px-2 py-0.5 rounded-full bg-red-100 text-red-600';
+              } else if (hasWarn) {
+                validationBadge.textContent = issues.numWarnings + ' aviso(s)';
+                validationBadge.className = 'text-xs font-medium px-2 py-0.5 rounded-full bg-yellow-100 text-yellow-600';
+              } else {
+                validationBadge.textContent = 'Válido';
+                validationBadge.className = 'text-xs font-medium px-2 py-0.5 rounded-full bg-green-100 text-green-600';
+              }
+
+              var html = '<div class="flex flex-wrap gap-2 mb-4">'
+                + pill(issues.numErrors,   'Erros',  'red')
+                + pill(issues.numWarnings, 'Avisos', 'yellow')
+                + pill(issues.numInfos,    'Infos',  'blue')
+                + pill(issues.numHints,    'Hints',  'gray')
+                + '</div>';
+
+              if (issues.messages && issues.messages.length > 0) {
+                html += '<ul class="space-y-1.5">';
+                issues.messages.forEach(function (msg) {
+                  var colors = { ERROR: 'text-red-600', WARNING: 'text-yellow-600', INFORMATION: 'text-blue-600', HINT: 'text-gray-400' };
+                  var color  = colors[msg.severity] || 'text-gray-500';
+                  html += '<li class="flex gap-2 text-xs leading-relaxed">'
+                    + '<span class="font-semibold shrink-0 ' + color + '">[' + msg.severity + ']</span>'
+                    + '<span class="text-gray-600">' + escHtml(msg.message)
+                    + (msg.pointer ? ' <span class="text-gray-400">(' + escHtml(msg.pointer) + ')</span>' : '')
+                    + '</span></li>';
+                });
+                html += '</ul>';
+              } else {
+                html += '<p class="text-xs text-green-600">Nenhum problema encontrado.</p>';
+              }
+
+              validationBody.innerHTML = html;
+            })
+            .catch(function (err) {
+              validationBadge.textContent = 'Falha';
+              validationBadge.className = 'text-xs font-medium px-2 py-0.5 rounded-full bg-red-100 text-red-600';
+              validationBody.textContent = 'Erro ao validar: ' + err.message;
+            });
+        } else if (validationBody) {
+          validationBody.textContent = 'Validador não disponível.';
+        }
       });
 
       function setCell(id, value) {
         var el = document.getElementById(id);
         if (el) el.textContent = value;
+      }
+
+      function pill(count, label, color) {
+        var map = { red: 'bg-red-50 text-red-600', yellow: 'bg-yellow-50 text-yellow-600', blue: 'bg-blue-50 text-blue-600', gray: 'bg-gray-100 text-gray-500' };
+        return '<span class="inline-flex items-center gap-1 text-xs px-2 py-0.5 rounded-full ' + (map[color] || map.gray) + '"><strong>' + count + '</strong> ' + label + '</span>';
+      }
+
+      function escHtml(str) {
+        return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
       }
     })();
   </script>
@@ -160,6 +226,17 @@
           </tr>
         </tbody>
       </table>
+    </div>
+
+    <!-- Validação glTF -->
+    <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+      <div class="px-5 py-3 border-b border-gray-100 bg-gray-50 flex items-center justify-between">
+        <span class="text-xs font-semibold uppercase tracking-wider text-gray-500">Validação glTF</span>
+        <span id="gltf-badge" class="text-xs font-medium px-2 py-0.5 rounded-full bg-gray-100 text-gray-400">Aguardando...</span>
+      </div>
+      <div id="gltf-validation-body" class="px-5 py-4 text-sm text-gray-400">
+        Carregando validação...
+      </div>
     </div>
 
     <!-- Tabela de informações -->

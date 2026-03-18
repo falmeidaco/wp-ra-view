@@ -20,6 +20,19 @@ function carregar_estilos_tema() {
 
 add_action('wp_enqueue_scripts', 'carregar_estilos_tema');
 
+function carregar_scripts_tema() {
+    if (is_singular('objetora')) {
+        wp_enqueue_script(
+            'gltf-validator',
+            get_template_directory_uri() . '/assets/js/validator.js',
+            [],
+            filemtime(get_stylesheet_directory() . '/assets/js/validator.js'),
+            true
+        );
+    }
+}
+add_action('wp_enqueue_scripts', 'carregar_scripts_tema');
+
 add_theme_support('post-thumbnails');
 
 function permitir_upload_glb($mimes) {
