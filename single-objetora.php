@@ -42,8 +42,10 @@
       if (fill) {
         mv.addEventListener('progress', function (e) {
           fill.style.width = (e.detail.totalProgress * 100).toFixed(1) + '%';
-          if (e.detail.totalProgress >= 1) {
-            setTimeout(function () { fill.style.opacity = '0'; }, 400);
+          if (e.detail.totalProgress < 1) {
+            fill.style.opacity = '1';
+          } else {
+            fill.style.opacity = '0';
           }
         });
       }
