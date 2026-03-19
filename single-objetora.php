@@ -21,7 +21,20 @@
       alt="<?php echo esc_attr(get_the_title()) ?>"
       src="<?php echo esc_url($glb_file_url) ?>"
       ar shadow-intensity="1" camera-controls touch-action="pan-y"
+      reveal="interaction"
       style="width:100%; height:100%; --progress-bar-color: transparent; --progress-bar-height: 0px;">
+      <!-- Poster: exibido até o usuário clicar -->
+      <div slot="poster" class="absolute inset-0 flex flex-col items-center justify-center gap-4 bg-gray-50">
+        <svg xmlns="http://www.w3.org/2000/svg" width="52" height="52" viewBox="0 0 24 24" fill="none" stroke="#d1d5db" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
+          <polyline points="3.27 6.96 12 12.01 20.73 6.96"/>
+          <line x1="12" y1="22.08" x2="12" y2="12"/>
+        </svg>
+        <button class="text-sm font-semibold text-white bg-blue-500 hover:bg-blue-600 active:bg-blue-700 transition-colors px-6 py-2.5 rounded-lg cursor-pointer border-0">
+          Carregar modelo 3D
+        </button>
+        <span class="text-xs text-gray-400"><?php echo esc_html($glb_filesize_mb) ?> &mdash; o download será iniciado ao clicar</span>
+      </div>
       <!-- Barra de progresso customizada na parte inferior -->
       <div slot="progress-bar"
            style="position:absolute; bottom:0; left:0; right:0; height:4px; background:rgba(0,0,0,0.08);">
@@ -37,6 +50,14 @@
       var fill = document.getElementById('mv-progress-fill');
 
       if (!mv) return;
+
+      // Lazy load: clique no poster remove o atributo reveal e inicia o download
+      var poster = mv.querySelector('[slot="poster"]');
+      if (poster) {
+        poster.addEventListener('click', function () {
+          mv.dismissPoster();
+        });
+      }
 
       // Barra de progresso
       if (fill) {
